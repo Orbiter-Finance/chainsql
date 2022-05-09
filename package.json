@@ -1,0 +1,40 @@
+{
+  "name": "chainsql",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node ./index.ts",
+    "bin": "ts-node ./bin/index.ts",
+    "start": "npm run build && node ./dist/index.js",
+    "build": "npm run clean && tsc && ncp package.json dist/package.json",
+    "clean": "rimraf coverage output dist",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "chainsql": "./bin/index.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@dydxprotocol/v3-client": "^1.8.3",
+    "axios": "^0.26.1",
+    "axios-retry": "^3.2.5",
+    "commander": "^9.2.0",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.0.0",
+    "moment": "^2.29.3",
+    "ncp": "^2.0.0",
+    "node-schedule": "^2.1.0",
+    "sequelize": "^6.19.0",
+    "sqlite": "^4.1.1",
+    "sqlite3": "^5.0.8",
+    "web3": "^1.7.3",
+    "winston": "^3.7.2",
+    "winston-daily-rotate-file": "^4.6.1"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.5.0",
+    "@types/node-schedule": "^2.1.0"
+  }
+}
