@@ -1,0 +1,18 @@
+version: '3.8'
+services:
+  dydx:
+    build: .
+    command: yarn run start
+    environment:
+      MAKER_ADDRESS: ""
+      SECERT: ""
+      KEY: ""
+      PASSPHRASE: "jDCUVKtPO8PQ60RiXYXH"
+      PUSH_URL: "http://127.0.0.1:3002/notify/dydx"
+      # PUSH_TRANSACTION_INTERVAL: 5
+      # PUSH_TRANSACTION_LIMIT: 2
+      # NETWORK_ID: 3
+      # PULL_TRANSACTION_INTERVAL: 30
+    volumes:
+      - './runtime:/home/www/chainsql/runtime'
+    restart: always

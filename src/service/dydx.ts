@@ -31,12 +31,12 @@ export default class Dydx {
   }
 
   public async startTimer() {
-    const user: any = await this.dydxClient.private.getUser();
+    const {user} = await this.dydxClient.private.getUser();
     if (!user) {
       throw new Error("Get dydx User Fail");
     }
-    if (user.ethereumAddress != this.ctx.config.makerAddress) {
-      throw new Error('ethereumAddress & env MakerAddress Not Equals')
+    if (user.ethereumAddress.toLowerCase() != this.ctx.config.makerAddress.toLowerCase()) {
+      throw new Error(`ethereumAddress ${user.ethereumAddress} & Env MakerAddress ${this.ctx.config.makerAddress} Not Equals`)
     }
     this.ctx.config.makerAddress = user.ethereumAddress;
     const { PULL_TRANSACTION_INTERVAL, PUSH_TRANSACTION_INTERVAL } =
@@ -213,6 +213,8 @@ export default class Dydx {
           },
         },
       }
-    );
+    ).catch(error=> {
+      this.ctx.logger.error(`requestNotify error:${txlist.map(row => row.id)}`, error)
+    });
   }
 }

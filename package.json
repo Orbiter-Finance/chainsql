@@ -6,13 +6,13 @@
   "scripts": {
     "dev": "ts-node ./index.ts",
     "bin": "ts-node ./bin/index.ts",
-    "start": "npm run build && node ./dist/index.js",
+    "start": "node ./dist/index.js",
     "build": "npm run clean && tsc && ncp package.json dist/package.json",
     "clean": "rimraf coverage output dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-    "chainsql": "./bin/index.ts"
+    "chainsql": "./dist/bin/chainsql.js"
   },
   "author": "",
   "license": "ISC",

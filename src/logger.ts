@@ -26,7 +26,7 @@ export class LoggerService {
           ),
         }),
         new transports.DailyRotateFile({
-          filename: "logs/error-%DATE%.log",
+          filename: "runtime/logs/error-%DATE%.log",
           datePattern: "YYYY-MM-DD",
           zippedArchive: true,
           maxSize: "20m",
@@ -41,7 +41,7 @@ export class LoggerService {
           ),
         }),
         new transports.DailyRotateFile({
-          filename: "logs/info-%DATE%.log",
+          filename: "runtime/logs/info-%DATE%.log",
           datePattern: "YYYY-MM-DD",
           zippedArchive: true,
           maxSize: "20m",
