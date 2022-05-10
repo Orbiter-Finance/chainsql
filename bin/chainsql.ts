@@ -14,7 +14,7 @@ program
 program
   .command("pullTransactionByDatetime <keys> <startAt> <endAt>")
   .description("pullTransactionByDatetime")
-  .action((key: string, startAt: string, endAt: string) => {
+  .action(async(key: string, startAt: string, endAt: string) => {
     const keyList = key.split(".");
     if (keyList.length != 3) {
       throw new Error("keys Format(KEY.SECERT.PASSPHRASE) Format Error");
@@ -23,12 +23,13 @@ program
     process.env["SECERT"] = keyList[1];
     process.env["PASSPHRASE"] = keyList[2];
     const ctx = new Context();
-    new Dydx(ctx).pullTransactionByDatetime(startAt, endAt);
+    const dydxService = new Dydx(ctx);
+    return await dydxService.pullTransactionByDatetime(startAt, endAt);
   });
 program
   .command("pushTransactionByDatetime <keys> <startAt> <endAt>")
   .description("pushTransactionByDatetime")
-  .action((keys: string, startAt: string, endAt: string) => {
+  .action(async(keys: string, startAt: string, endAt: string) => {
     const keyList = keys.split(".");
     if (keyList.length != 3) {
       throw new Error("keys Format(KEY.SECERT.PASSPHRASE) Format Error");
@@ -37,7 +38,8 @@ program
     process.env["SECERT"] = keyList[1];
     process.env["PASSPHRASE"] = keyList[2];
     const ctx = new Context();
-    new Dydx(ctx).pushTransactionByDatetime(startAt, endAt);
+    const dydxService = new Dydx(ctx);
+    return await dydxService.pushTransactionByDatetime(startAt, endAt);
   });
 program.parse(process.argv);
 

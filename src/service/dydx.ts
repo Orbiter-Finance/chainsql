@@ -19,10 +19,14 @@ export default class Dydx {
     this.ctx = context;
     const apiKeyCredentials = this.ctx.config.dydx.apiKeyCredentials;
     if (!apiKeyCredentials) {
-      throw new Error(`Api Key Not Config!`)
+      throw new Error(`Api Key Not Config!`);
     }
-    if ( !apiKeyCredentials.key || !apiKeyCredentials.secret || !apiKeyCredentials.passphrase) {
-      throw new Error(`Api Key Config Value Not Found`)
+    if (
+      !apiKeyCredentials.key ||
+      !apiKeyCredentials.secret ||
+      !apiKeyCredentials.passphrase
+    ) {
+      throw new Error(`Api Key Config Value Not Found`);
     }
     const web3 = new Web3();
     this.dydxClient = new DydxClient(String(this.ctx.config.dydx.ENDPOINT), {
@@ -34,12 +38,17 @@ export default class Dydx {
   }
 
   public async startTimer() {
-    const {user} = await this.dydxClient.private.getUser();
+    const { user } = await this.dydxClient.private.getUser();
     if (!user) {
       throw new Error("Get dydx User Fail");
     }
-    if (user.ethereumAddress.toLowerCase() != this.ctx.config.makerAddress.toLowerCase()) {
-      throw new Error(`ethereumAddress ${user.ethereumAddress} & Env MakerAddress ${this.ctx.config.makerAddress} Not Equals`)
+    if (
+      user.ethereumAddress.toLowerCase() !=
+      this.ctx.config.makerAddress.toLowerCase()
+    ) {
+      throw new Error(
+        `ethereumAddress ${user.ethereumAddress} & Env MakerAddress ${this.ctx.config.makerAddress} Not Equals`
+      );
     }
     this.ctx.config.makerAddress = user.ethereumAddress;
     const { PULL_TRANSACTION_INTERVAL, PUSH_TRANSACTION_INTERVAL } =
@@ -91,12 +100,19 @@ export default class Dydx {
       })
         .then((trxList) => {
           if (trxList.length > 0) {
-            this.requestNotify(trxList).then((result) => {
-              this.ctx.logger.info("pushLatestTransaction success:", {
-                txlist: trxList.map((row) => row.id),
+            this.requestNotify(trxList)
+              .then((result) => {
+                this.ctx.logger.info("pushLatestTransaction success:", {
+                  txlist: trxList.map((row) => row.id),
+                });
+                resolve(result);
+              })
+              .catch((error) => {
+                this.ctx.logger.info(
+                  "pushLatestTransaction RequestNotify error:",
+                  error.message
+                );
               });
-              resolve(result);
-            });
           }
         })
         .catch((error) => {
@@ -133,9 +149,15 @@ export default class Dydx {
           allTrxList.push(...trxList);
           Transactions.bulkCreate(trxList, {
             updateOnDuplicate: ["status"],
-          }).catch((error) => {
-            this.ctx.logger.error(`getHistoryTransaction error:`, error);
-          });
+          })
+            .then((resp) => {
+              this.ctx.logger.info("pullTransactionByDatetime success:", {
+                txlist: resp.map((row) => row.id),
+              });
+            })
+            .catch((error) => {
+              this.ctx.logger.error(`pullTransactionByDatetime error:`, error);
+            });
           const last = trxList[trxList.length - 1];
           createdBeforeOrAt = moment(last.createdAt).toISOString();
         }
@@ -160,25 +182,32 @@ export default class Dydx {
       Transactions.findAll({
         raw: true,
         where: {
-          createdAt:{
-            [Op.gte]: moment(startdAt).format('YYYY-MM-DD HH:mm:ss'),
-            [Op.lte]: moment(endAt).format('YYYY-MM-DD HH:mm:ss'),
-          }
+          createdAt: {
+            [Op.gte]: moment(startdAt).format("YYYY-MM-DD HH:mm:ss"),
+            [Op.lte]: moment(endAt).format("YYYY-MM-DD HH:mm:ss"),
+          },
         },
         order: [["createdAt", "desc"]],
       })
         .then((trxList) => {
           if (trxList.length > 0) {
-            this.requestNotify(trxList).then((result) => {
-              this.ctx.logger.info("pushLatestTransaction success:", {
-                txlist: trxList.map((row) => row.id),
+            this.requestNotify(trxList)
+              .then((result) => {
+                this.ctx.logger.info("pushTransactionByDatetime success:", {
+                  txlist: trxList.map((row) => row.id),
+                });
+                resolve(result);
+              })
+              .catch((error) => {
+                this.ctx.logger.info(
+                  "pushTransactionByDatetime RequestNotify error:",
+                  error.message
+                );
               });
-              resolve(result);
-            });
           }
         })
         .catch((error) => {
-          this.ctx.logger.error("pushLatestTransaction error:", error);
+          this.ctx.logger.error("pushTransactionByDatetime error:", error);
           reject(error);
         });
     });
@@ -196,10 +225,16 @@ export default class Dydx {
       })
       .then((result: { transfers: any }) => result.transfers)
       .then((result: any) => {
-        return result && result.map((row: { createdAt: any }) => {
-          row.createdAt = moment(row.createdAt).format("YYYY-MM-DD HH:mm:ss");
-          return row;
-        }) || [];
+        return (
+          (result &&
+            result.map((row: { createdAt: any }) => {
+              row.createdAt = moment(row.createdAt).format(
+                "YYYY-MM-DD HH:mm:ss"
+              );
+              return row;
+            })) ||
+          []
+        );
       });
   }
 
@@ -216,8 +251,6 @@ export default class Dydx {
           },
         },
       }
-    ).catch(error=> {
-      this.ctx.logger.error(`requestNotify error:${txlist.map(row => row.id)}`, error)
-    });
+    );
   }
 }

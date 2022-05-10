@@ -66,7 +66,7 @@ docker-compose up -d
 ```
 ##### Docker run
 ```bash
-docker run --name chainsql -i -t -v "$PWD"/runtime:/home/www/chainsql/runtime -e KETS=""  chainsql_dydx:latest npm run start
+docker run --name chainsql -i -t -v $PWD/runtime:/home/www/chainsql/runtime -e KETS=""  chainsql_dydx:latest npm run start
 ```
 ### Tips
 - Build Docker Image
