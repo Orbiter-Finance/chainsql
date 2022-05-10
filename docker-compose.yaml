@@ -7,7 +7,7 @@ services:
       MAKER_ADDRESS: ""
       SECERT: ""
       KEY: ""
-      PASSPHRASE: "jDCUVKtPO8PQ60RiXYXH"
+      PASSPHRASE: ""
       PUSH_URL: "http://127.0.0.1:3002/notify/dydx"
       # PUSH_TRANSACTION_INTERVAL: 5
       # PUSH_TRANSACTION_LIMIT: 2

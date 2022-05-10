@@ -20,9 +20,9 @@ export default class DydxConfig {
     );
     this.PUSH_TRANSACTION_LIMIT = Number(env["PUSH_TRANSACTION_LIMIT"] || 100);
     this.apiKeyCredentials = {
-      key: String(env["KEY"]),
-      secret: String(env["SECERT"]),
-      passphrase: String(env["PASSPHRASE"]),
+      key:env["KEY"] || "",
+      secret: env["SECERT"] || "",
+      passphrase: env["PASSPHRASE"] || "",
     };
     this.ENDPOINT =
       this.NETWORK_ID === 1

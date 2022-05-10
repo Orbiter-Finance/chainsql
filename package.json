@@ -34,7 +34,6 @@
     "winston-daily-rotate-file": "^4.6.1"
   },
   "devDependencies": {
-    "@types/better-sqlite3": "^7.5.0",
     "@types/node-schedule": "^2.1.0"
   }
 }
