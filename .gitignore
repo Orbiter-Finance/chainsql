@@ -1,7 +1,8 @@
 .DS_Store
 node_modules
 dist
-rintime
+runtime
+package-lock.json
 
 # local env files
 .env
