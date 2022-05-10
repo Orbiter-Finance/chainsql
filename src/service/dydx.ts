@@ -97,7 +97,7 @@ export default class Dydx {
           }
         })
         .catch((error) => {
-          this.ctx.logger.error("pushLatestTransaction error:", error);
+          this.ctx.logger.error("pushLatestTransaction error:", error.message);
           reject(error);
         });
     });
