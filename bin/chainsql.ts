@@ -12,30 +12,30 @@ program
   .option("-d, --debug", "open debug", false);
 
 program
-  .command("pullTransactionByDatetime <key> <startAt> <endAt>")
+  .command("pullTransactionByDatetime <keys> <startAt> <endAt>")
   .description("pullTransactionByDatetime")
   .action((key: string, startAt: string, endAt: string) => {
-    const keys = key.split("|");
-    if (keys.length != 3) {
-      throw new Error("KEY|SECERT|PASSPHRASE Format Error");
+    const keyList = key.split(".");
+    if (keyList.length != 3) {
+      throw new Error("keys Format(KEY.SECERT.PASSPHRASE) Format Error");
     }
-    process.env["KEY"] = keys[0];
-    process.env["SECERT"] = keys[1];
-    process.env["PASSPHRASE"] = keys[2];
+    process.env["KEY"] = keyList[0];
+    process.env["SECERT"] = keyList[1];
+    process.env["PASSPHRASE"] = keyList[2];
     const ctx = new Context();
     new Dydx(ctx).pullTransactionByDatetime(startAt, endAt);
   });
 program
-  .command("pushTransactionByDatetime <key> <startAt> <endAt>")
+  .command("pushTransactionByDatetime <keys> <startAt> <endAt>")
   .description("pushTransactionByDatetime")
-  .action((key: string, startAt: string, endAt: string) => {
-    const keys = key.split("|");
-    if (keys.length != 3) {
-      throw new Error("KEY|SECERT|PASSPHRASE Format Error");
+  .action((keys: string, startAt: string, endAt: string) => {
+    const keyList = keys.split(".");
+    if (keyList.length != 3) {
+      throw new Error("keys Format(KEY.SECERT.PASSPHRASE) Format Error");
     }
-    process.env["KEY"] = keys[0];
-    process.env["SECERT"] = keys[1];
-    process.env["PASSPHRASE"] = keys[2];
+    process.env["KEY"] = keyList[0];
+    process.env["SECERT"] = keyList[1];
+    process.env["PASSPHRASE"] = keyList[2];
     const ctx = new Context();
     new Dydx(ctx).pushTransactionByDatetime(startAt, endAt);
   });

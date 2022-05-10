@@ -25,14 +25,8 @@ PULL_TRANSACTION_INTERVAL=30
 # Maker Address 
 MAKER_ADDRESS=""
 
-# Dydx Api Secert
-SECERT=""
-
-# Dydx Api Key
-KEY=""
-
-# Dydx Api Passphrase
-PASSPHRASE=""
+# Dydx KEY . Secert . Passphrase 
+KEYS = "" 
 ```
 ##### Develop Run
 ```bash
@@ -60,9 +54,7 @@ $ npm start
 ###### Config Docker Environment Variable
 ```bash
 MAKER_ADDRESS: ""
-SECERT: ""
-KEY: ""
-PASSPHRASE: ""
+KEYS: ""
 PUSH_URL: ""
 PUSH_TRANSACTION_INTERVAL: 5
 PUSH_TRANSACTION_LIMIT: 2
@@ -74,7 +66,7 @@ docker-compose up -d
 ```
 ##### Docker run
 ```bash
-docker run --name chainsql -i -t -e MAKER_ADDRESS="" -e SECERT="" -e PASSPHRASE="" -e KEY=""  chainsql_dydx:latest npm run start
+docker run --name chainsql -i -t -e KEYS=""  chainsql_dydx:latest npm run start
 ```
 ### Tips
 - After modifying the code, you need to rebuild the project

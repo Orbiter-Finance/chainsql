@@ -7,7 +7,7 @@ export default class DydxConfig {
   public PUSH_TRANSACTION_LIMIT: number;
   public ENDPOINT: string;
   public PULL_TRANSACTION_INTERVAL: number;
-  public apiKeyCredentials: ApiKeyCredentials;
+  public apiKeyCredentials?: ApiKeyCredentials;
   constructor() {
     const env = process.env;
     this.NETWORK_ID = Number(env["NETWORK_ID"] || 3);
@@ -19,11 +19,15 @@ export default class DydxConfig {
       env["PULL_TRANSACTION_INTERVAL"] || 30
     );
     this.PUSH_TRANSACTION_LIMIT = Number(env["PUSH_TRANSACTION_LIMIT"] || 100);
+    const keys = env["KEYS"]?.split(".");
     this.apiKeyCredentials = {
-      key:env["KEY"] || "",
-      secret: env["SECERT"] || "",
-      passphrase: env["PASSPHRASE"] || "",
+      key: "",
+      secret: "",
+      passphrase: "",
     };
+    this.apiKeyCredentials.key = keys && keys.length >= 0 ? keys[0] : "";
+    this.apiKeyCredentials.secret = keys && keys.length >= 1 ? keys[1] : "";
+    this.apiKeyCredentials.passphrase = keys && keys.length >= 2 ? keys[2] : "";
     this.ENDPOINT =
       this.NETWORK_ID === 1
         ? "https://api.dydx.exchange"

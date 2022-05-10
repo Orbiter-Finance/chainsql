@@ -18,8 +18,11 @@ export default class Dydx {
   constructor(context: Context) {
     this.ctx = context;
     const apiKeyCredentials = this.ctx.config.dydx.apiKeyCredentials;
-    if (!apiKeyCredentials.key || !apiKeyCredentials.secret || !apiKeyCredentials.passphrase) {
-      throw new Error('Api Key Not Found')
+    if (!apiKeyCredentials) {
+      throw new Error(`Api Key Not Config!`)
+    }
+    if ( !apiKeyCredentials.key || !apiKeyCredentials.secret || !apiKeyCredentials.passphrase) {
+      throw new Error(`Api Key Config Value Not Found`)
     }
     const web3 = new Web3();
     this.dydxClient = new DydxClient(String(this.ctx.config.dydx.ENDPOINT), {
