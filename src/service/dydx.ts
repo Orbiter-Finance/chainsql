@@ -174,7 +174,7 @@ export default class DydxService {
           const last = trxList[trxList.length - 1];
           createdBeforeOrAt = moment(last.createdAt).toISOString();
         }
-        resolve(allTrxList);
+        resolve(allTrxList.map(row => row.id));
       } catch (error) {
         reject(error);
       }
@@ -209,7 +209,7 @@ export default class DydxService {
                 this.ctx.logger.info("pushTransactionByDatetime success:", {
                   txlist: trxList.map((row) => row.id),
                 });
-                resolve(result);
+                resolve(trxList.map((row) => row.id));
               })
               .catch((error) => {
                 this.ctx.logger.info(

@@ -21,7 +21,6 @@ export class Net {
     client.on("error", (error) => {
       this.logger.error("[Client] MsgNotify Client Error", error);
     });
-    client.on("data", (data) => console.log(`receive: ${data}`));
     return client;
   }
   async createServer(callback: any): Promise<Server> {
@@ -34,7 +33,7 @@ export class Net {
         this.logger.info("[Server] MsgNotift Server Close");
       });
       conn.on("data", (data) => {
-        callback(data);
+        callback(conn, data);
       });
       conn.on("error", (error) => {
         this.logger.error("[Server] MsgNotify Server Error", error);
