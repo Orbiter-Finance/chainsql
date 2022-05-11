@@ -87,7 +87,7 @@ chainsql
 chainsql
 ```
 
-##### After executing the chainsql command, the following welcome content will be printed
+#### After executing the chainsql command, the following welcome content will be printed
 ```   ___           _       _   _                           _____   _                                       
   / _ \   _ __  | |__   (_) | |_    ___   _ __          |  ___| (_)  _ __     __ _   _ __     ___    ___ 
  | | | | | '__| | '_ \  | | | __|  / _ \ | '__|  _____  | |_    | | | '_ \   / _` | | '_ \   / __|  / _ \
@@ -101,7 +101,7 @@ chainsql
   Injection Configuration
 ```
 | CMD | Remark  |
-| ------ | ------ | ------ |
+| ------ | ------ |
 | PullTransaction | Manually pull the transaction data of block browser  |
 | PushTransaction | Manually push transactions to your dashboard  |
 | Injection Configuration | For your security, it is recommended that you dynamically inject your private key  |
