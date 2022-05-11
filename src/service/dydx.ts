@@ -48,6 +48,7 @@ export default class DydxService {
           this.ctx.logger.error(
             "Dydx key|secret|passphrase| Not Config apiKeyCredentials"
           );
+          return;
         }
         this.getAccount(this.ctx.config.makerAddress);
       }
@@ -56,6 +57,7 @@ export default class DydxService {
           this.ctx.logger.error(
             "Dydx key|secret|passphrase| Not Config apiKeyCredentials"
           );
+          return;
         }
         this.pullLatestTransaction();
       }
