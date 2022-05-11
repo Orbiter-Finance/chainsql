@@ -27,6 +27,9 @@ MAKER_ADDRESS=""
 
 # Dydx KEY . Secert . Passphrase 
 KEYS = "" 
+
+# Pull Maker Address Balance
+PULL_ACCOUNT_INTERVAL = 30
 ```
 ##### Develop Run
 ```bash
@@ -60,6 +63,7 @@ PUSH_TRANSACTION_INTERVAL: 5
 PUSH_TRANSACTION_LIMIT: 2
 NETWORK_ID: 3
 PULL_TRANSACTION_INTERVAL: 30
+PULL_ACCOUNT_INTERVAL:30
 ```
 ```bash
 docker-compose up -d
@@ -68,6 +72,40 @@ docker-compose up -d
 ```bash
 docker run --name chainsql -i -t -v $PWD/runtime:/home/www/chainsql/runtime -e KETS=""  chainsql_dydx:latest npm run start
 ```
+### Chainsql built-in tools
+#### Develop
+```bash
+npm link // Install chainsql bin To Global
+```
+```bash
+chainsql
+```
+- If you feel very troublesome, you can use ts-node ./bin/chainsql.ts or node ./dist/bin/chainsql.js running tool
+#### Docker 
+- When you compile the project, the system has installed the program globally, and you can use chainsql anywhere
+```
+chainsql
+```
+
+##### After executing the chainsql command, the following welcome content will be printed
+```   ___           _       _   _                           _____   _                                       
+  / _ \   _ __  | |__   (_) | |_    ___   _ __          |  ___| (_)  _ __     __ _   _ __     ___    ___ 
+ | | | | | '__| | '_ \  | | | __|  / _ \ | '__|  _____  | |_    | | | '_ \   / _` | | '_ \   / __|  / _ \
+ | |_| | | |    | |_) | | | | |_  |  __/ | |    |_____| |  _|   | | | | | | | (_| | | | | | | (__  |  __/
+  \___/  |_|    |_.__/  |_|  \__|  \___| |_|            |_|     |_| |_| |_|  \__,_| |_| |_|  \___|  \___|
+                                                                                                         
+? What do you want to do? (Use arrow keys)
+  ──────────────
+❯ PullTransaction 
+  PushTransaction 
+  Injection Configuration
+```
+| CMD | Remark  |
+| ------ | ------ | ------ |
+| PullTransaction | Manually pull the transaction data of block browser  |
+| PushTransaction | Manually push transactions to your dashboard  |
+| Injection Configuration | For your security, it is recommended that you dynamically inject your private key  |
+
 ### Tips
 - Build Docker Image
 ``` bash
