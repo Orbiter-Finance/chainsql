@@ -10,16 +10,16 @@
 # Notification address for receiving push transaction
 PUSH_URL = "http://127.0.0.1:3002/notify/dydx" 
 
-# Push transaction interval
+# Push Transaction Interval
 PUSH_TRANSACTION_INTERVAL = 5
 
-# Single push transaction quantity
+# Single Push Transaction Quantity
 PUSH_TRANSACTION_LIMIT= 2
 
 # DYDX Testnet = 3 Mainet = 1
 NETWORK_ID=3
 
-# Pull transaction interval
+# Pull Transaction Interval
 PULL_TRANSACTION_INTERVAL=30
 
 # Maker Address 
@@ -28,7 +28,7 @@ MAKER_ADDRESS=""
 # Dydx KEY . Secert . Passphrase 
 KEYS = "" 
 
-# Pull Maker Address Balance
+# Pull Maker Address Balance Interval
 PULL_ACCOUNT_INTERVAL = 30
 ```
 ##### Develop Run
@@ -57,13 +57,9 @@ $ npm start
 ###### Config Docker Environment Variable
 ```bash
 MAKER_ADDRESS: ""
-KEYS: ""
 PUSH_URL: ""
 PUSH_TRANSACTION_INTERVAL: 5
-PUSH_TRANSACTION_LIMIT: 2
-NETWORK_ID: 3
-PULL_TRANSACTION_INTERVAL: 30
-PULL_ACCOUNT_INTERVAL:30
+....
 ```
 ```bash
 docker-compose up -d
@@ -87,7 +83,7 @@ chainsql
 chainsql
 ```
 
-##### After executing the chainsql command, the following welcome content will be printed
+#### After executing the chainsql command, the following welcome content will be printed
 ```   ___           _       _   _                           _____   _                                       
   / _ \   _ __  | |__   (_) | |_    ___   _ __          |  ___| (_)  _ __     __ _   _ __     ___    ___ 
  | | | | | '__| | '_ \  | | | __|  / _ \ | '__|  _____  | |_    | | | '_ \   / _` | | '_ \   / __|  / _ \
