@@ -8,15 +8,19 @@ export default class DydxConfig {
   public ENDPOINT: string;
   public PULL_TRANSACTION_INTERVAL: number;
   public apiKeyCredentials?: ApiKeyCredentials;
+  public PULL_ACCOUNT_INTERVAL:number;
   constructor() {
     const env = process.env;
     this.NETWORK_ID = Number(env["NETWORK_ID"] || 3);
     this.PUSH_URL = String(env["PUSH_URL"]);
     this.PUSH_TRANSACTION_INTERVAL = Number(
-      env["PUSH_TRANSACTION_INTERVAL"] || 10
+      env["PUSH_TRANSACTION_INTERVAL"] || 20
     );
     this.PULL_TRANSACTION_INTERVAL = Number(
       env["PULL_TRANSACTION_INTERVAL"] || 30
+    );
+    this.PULL_ACCOUNT_INTERVAL = Number(
+      env["PULL_ACCOUNT_INTERVAL"] || 30
     );
     this.PUSH_TRANSACTION_LIMIT = Number(env["PUSH_TRANSACTION_LIMIT"] || 100);
     const keys = env["KEYS"]?.split(".");

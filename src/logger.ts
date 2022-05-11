@@ -1,7 +1,7 @@
 // import dayjs from "dayjs";
 import { createLogger, Logger, transports, format } from "winston";
 import "winston-daily-rotate-file";
-const { label,prettyPrint } = format;
+const { label } = format;
 export const LOGGER_LEVEL = {
   error: 0,
   warn: 1,

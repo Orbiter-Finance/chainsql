@@ -23,6 +23,9 @@
     "commander": "^9.2.0",
     "cross-env": "^7.0.3",
     "dotenv": "^16.0.0",
+    "figlet": "^1.5.2",
+    "inquirer": "^8.2.4",
+    "lodash": "^4.17.21",
     "moment": "^2.29.3",
     "ncp": "^2.0.0",
     "node-schedule": "^2.1.0",
@@ -34,6 +37,10 @@
     "winston-daily-rotate-file": "^4.6.1"
   },
   "devDependencies": {
-    "@types/node-schedule": "^2.1.0"
+    "@types/figlet": "^1.5.4",
+    "@types/inquirer": "^8.2.1",
+    "@types/lodash": "^4.14.182",
+    "@types/node-schedule": "^2.1.0",
+    "@types/typescript": "^2.0.0"
   }
 }

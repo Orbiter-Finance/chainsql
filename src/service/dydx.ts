@@ -1,5 +1,5 @@
 import schedule, { Job } from "node-schedule";
-import { DydxClient } from "@dydxprotocol/v3-client";
+import { AccountResponseObject, DydxClient } from "@dydxprotocol/v3-client";
 import moment from "moment";
 import axios from "axios";
 import axiosRetry from "axios-retry";
@@ -8,26 +8,15 @@ import Context from "../context";
 import { Op } from "sequelize";
 const Web3 = require("web3");
 axiosRetry(axios);
-// const lastPullTime = dayjs().format();
-const lastPullTime = "2020-01-01 00:00";
-export default class Dydx {
+const lastPullTime = moment().format();
+export default class DydxService {
   private job: Job | undefined;
   private dydxClient!: DydxClient;
   private ctx: Context;
-
+  private accountInfo?: AccountResponseObject;
   constructor(context: Context) {
     this.ctx = context;
     const apiKeyCredentials = this.ctx.config.dydx.apiKeyCredentials;
-    if (!apiKeyCredentials) {
-      throw new Error(`Api Key Not Config!`);
-    }
-    if (
-      !apiKeyCredentials.key ||
-      !apiKeyCredentials.secret ||
-      !apiKeyCredentials.passphrase
-    ) {
-      throw new Error(`Api Key Config Value Not Found`);
-    }
     const web3 = new Web3();
     this.dydxClient = new DydxClient(String(this.ctx.config.dydx.ENDPOINT), {
       web3,
@@ -36,31 +25,52 @@ export default class Dydx {
       networkId: this.ctx.config.dydx.NETWORK_ID,
     });
   }
-
-  public async startTimer() {
-    const { user } = await this.dydxClient.private.getUser();
-    if (!user) {
-      throw new Error("Get dydx User Fail");
+  private isConfigApiKeyCredentials() {
+    if (!this.dydxClient.apiKeyCredentials) {
+      return false;
     }
     if (
-      user.ethereumAddress.toLowerCase() !=
-      this.ctx.config.makerAddress.toLowerCase()
+      !this.dydxClient.apiKeyCredentials.key ||
+      !this.dydxClient.apiKeyCredentials.secret ||
+      !this.dydxClient.apiKeyCredentials.passphrase
     ) {
-      throw new Error(
-        `ethereumAddress ${user.ethereumAddress} & Env MakerAddress ${this.ctx.config.makerAddress} Not Equals`
-      );
+      return false;
     }
-    this.ctx.config.makerAddress = user.ethereumAddress;
+    return true;
+  }
+  public async startTimer() {
     const { PULL_TRANSACTION_INTERVAL, PUSH_TRANSACTION_INTERVAL } =
       this.ctx.config.dydx;
     this.job = schedule.scheduleJob("* */1 * * * *", () => {
+      const isConfigApiKeyCredentials = this.isConfigApiKeyCredentials();
+      if (moment().unix() % this.ctx.config.dydx.PULL_ACCOUNT_INTERVAL === 0) {
+        if (!isConfigApiKeyCredentials) {
+          this.ctx.logger.error(
+            "Dydx key|secret|passphrase| Not Config apiKeyCredentials"
+          );
+        }
+        this.getAccount(this.ctx.config.makerAddress);
+      }
       if (moment().unix() % PULL_TRANSACTION_INTERVAL === 0) {
+        if (!isConfigApiKeyCredentials) {
+          this.ctx.logger.error(
+            "Dydx key|secret|passphrase| Not Config apiKeyCredentials"
+          );
+        }
         this.pullLatestTransaction();
       }
       if (moment().unix() % PUSH_TRANSACTION_INTERVAL === 0) {
         this.pushLatestTransaction();
       }
     });
+  }
+  public async getAccount(address: string) {
+    try {
+      const { account } = await this.dydxClient.private.getAccount(address);
+      this.accountInfo = account;
+    } catch (error) {
+      this.ctx.logger.error("dydx get account error");
+    }
   }
   /**
    * From Dydx Remote Pull Transaction To Local
@@ -84,8 +94,8 @@ export default class Dydx {
             this.ctx.logger.error("pullLatestTransaction save error:", error);
           });
       }
-    } catch (error) {
-      this.ctx.logger.error("pullLatestTransaction error:", error);
+    } catch (error: any) {
+      this.ctx.logger.error("pullLatestTransaction error:", error.message);
     }
   }
   /**
@@ -128,8 +138,8 @@ export default class Dydx {
    * @returns
    */
   public pullTransactionByDatetime(
-    startdAt: Date | string,
-    endAt: Date | string
+    startdAt: string | number,
+    endAt: string | number
   ): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
@@ -156,7 +166,10 @@ export default class Dydx {
               });
             })
             .catch((error) => {
-              this.ctx.logger.error(`pullTransactionByDatetime error:`, error);
+              this.ctx.logger.error(
+                `pullTransactionByDatetime error:`,
+                error.message
+              );
             });
           const last = trxList[trxList.length - 1];
           createdBeforeOrAt = moment(last.createdAt).toISOString();
@@ -175,8 +188,8 @@ export default class Dydx {
    * @returns
    */
   public pushTransactionByDatetime(
-    startdAt: Date | string,
-    endAt: Date | string
+    startdAt: number | string,
+    endAt: number | string
   ): Promise<any> {
     return new Promise((resolve, reject) => {
       Transactions.findAll({
@@ -207,7 +220,10 @@ export default class Dydx {
           }
         })
         .catch((error) => {
-          this.ctx.logger.error("pushTransactionByDatetime error:", error);
+          this.ctx.logger.error(
+            "pushTransactionByDatetime error:",
+            error.message
+          );
           reject(error);
         });
     });
@@ -240,17 +256,20 @@ export default class Dydx {
 
   public requestNotify(txlist: Transactions[]) {
     const address = this.ctx.config.makerAddress;
-    return axios.post(
-      this.ctx.config.dydx.PUSH_URL,
-      { txlist, address },
-      {
-        "axios-retry": {
-          retries: 10,
-          retryDelay: (retryCount: number) => {
-            return retryCount * 1000;
-          },
+    const body: any = {
+      address,
+      txlist,
+    };
+    if (this.accountInfo) {
+      body["account"] = this.accountInfo;
+    }
+    return axios.post(this.ctx.config.dydx.PUSH_URL, body, {
+      "axios-retry": {
+        retries: 10,
+        retryDelay: (retryCount: number) => {
+          return retryCount * 1000;
         },
-      }
-    );
+      },
+    });
   }
 }
