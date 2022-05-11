@@ -13,15 +13,11 @@ class ChainsqlBin {
   private netClient: Socket;
   constructor() {
     this.netClient = new Net(LoggerService.createLogger()).createClient();
-    this.netClient.on("data", (result) => {
-      console.log("返回信息：", result);
-    });
-
     console.log(
       chalk.green(
         figlet.textSync("Orbiter-Finance", {
           horizontalLayout: "full",
-          verticalLayout: "full",
+          verticalLayout: "full"
         })
       )
     );
@@ -53,9 +49,9 @@ class ChainsqlBin {
           new inquirer.Separator(),
           ...Object.values(CMDOpType),
           new inquirer.Separator(),
-          "\n",
-        ],
-      },
+          "\n"
+        ]
+      }
     ];
     return inquirer.prompt(questions);
   }
@@ -74,14 +70,14 @@ class ChainsqlBin {
       type: "list",
       name: "configName",
       message: "Select the configuration name you want to inject",
-      choices,
+      choices
     });
     let configValue = "";
     if (
       [
         "apiKeyCredentials.key",
         "apiKeyCredentials.secret",
-        "apiKeyCredentials.passphrase",
+        "apiKeyCredentials.passphrase"
       ].includes(configName)
     ) {
       configValue = await inquirer
@@ -90,8 +86,8 @@ class ChainsqlBin {
             type: "password",
             mask: "*",
             message: `Enter a [${configName}] : `,
-            name: "configValue",
-          },
+            name: "configValue"
+          }
         ])
         .then((res) => res.configValue);
     } else {
@@ -100,8 +96,8 @@ class ChainsqlBin {
           {
             type: "input",
             message: `Enter a [${configName}] : `,
-            name: "configValue",
-          },
+            name: "configValue"
+          }
         ])
         .then((res) => res.configValue);
     }
@@ -109,7 +105,7 @@ class ChainsqlBin {
       JSON.stringify({
         id: Date.now(),
         method: CMDOpType.InjectionConfiguration,
-        data: { [configName]: configValue },
+        data: { [configName]: configValue }
       })
     );
     return configValue;
@@ -122,7 +118,7 @@ class ChainsqlBin {
         message: "Transaction Start Time: ",
         default() {
           return moment().subtract(1, "M").unix();
-        },
+        }
       },
       {
         type: "input",
@@ -130,15 +126,15 @@ class ChainsqlBin {
         message: "Transaction End Time: ",
         default() {
           return moment().unix();
-        },
-      },
+        }
+      }
     ];
     const result = await inquirer.prompt(questions);
     this.netClient.write(
       JSON.stringify({
         id: Date.now(),
         method: CMDOpType.PushTransaction,
-        data: result,
+        data: result
       })
     );
     return result;
@@ -151,7 +147,7 @@ class ChainsqlBin {
         message: "Transaction Start Time: ",
         default() {
           return moment().subtract(1, "months").unix();
-        },
+        }
       },
       {
         type: "input",
@@ -159,69 +155,18 @@ class ChainsqlBin {
         message: "Transaction End Time: ",
         default() {
           return moment().unix();
-        },
-      },
+        }
+      }
     ];
     const result = await inquirer.prompt(questions);
     this.netClient.write(
       JSON.stringify({
         id: Date.now(),
         method: CMDOpType.PullTransaction,
-        data: result,
+        data: result
       })
     );
   }
 }
 
 new ChainsqlBin();
-// import { Command } from "commander";
-// import "dotenv/config";
-// import Dydx from "../src/service/dydx";
-// import Context from "../src/context";
-
-// const program = new Command();
-// program
-//   .version('0.1.0')
-//   .argument('<username>', 'user to login')
-//   .argument('[password]', 'password for user, if required', 'no password given')
-//   .action((username, password) => {
-//     console.log('username:', username);
-//     console.log('password:', password);
-//   });
-// // program
-// //   .version("0.0.1")
-// //   .usage("chainsql")
-// //   .description("Help")
-// //   .option("-d, --debug", "open debug", false);
-
-// // program
-// //   .command("pullTransactionByDatetime <keys> <startAt> <endAt>")
-// //   .description("pullTransactionByDatetime")
-// //   .action(async(key: string, startAt: string, endAt: string) => {
-// //     const keyList = key.split(".");
-// //     if (keyList.length != 3) {
-// //       throw new Error("keys Format(KEY.SECERT.PASSPHRASE) Format Error");
-// //     }
-// //     process.env["KEY"] = keyList[0];
-// //     process.env["SECERT"] = keyList[1];
-// //     process.env["PASSPHRASE"] = keyList[2];
-// //     const ctx = new Context();
-// //     const dydxService = new Dydx(ctx);
-// //     return await dydxService.pullTransactionByDatetime(startAt, endAt);
-// //   });
-// // program
-// //   .command("pushTransactionByDatetime <keys> <startAt> <endAt>")
-// //   .description("pushTransactionByDatetime")
-// //   .action(async(keys: string, startAt: string, endAt: string) => {
-// //     const keyList = keys.split(".");
-// //     if (keyList.length != 3) {
-// //       throw new Error("keys Format(KEY.SECERT.PASSPHRASE) Format Error");
-// //     }
-// //     process.env["KEY"] = keyList[0];
-// //     process.env["SECERT"] = keyList[1];
-// //     process.env["PASSPHRASE"] = keyList[2];
-// //     const ctx = new Context();
-// //     const dydxService = new Dydx(ctx);
-// //     return await dydxService.pushTransactionByDatetime(startAt, endAt);
-// //   });
-// program.parse(process.argv);
